@@ -47,7 +47,7 @@ const LeftSider = () => {
 					<IconArea items={items} onClick={handleClick} selectedId={selectedId}/>
 				</Sider>
 				<Content>
-					<FlyoutPanel items={getSubItems(selectedId)}/>
+					<FlyoutPanel items={getSubItems(selectedId)} id={selectedId}/>
 				</Content>
 			</Layout>
 		</Sider>

@@ -8,5 +8,5 @@ export const defaultComponentStyle = {
   borderStyle: "none",
   borderWidth: "0",
   borderColor: "#ffffff00",
-  transform: 0, //"rotate(0deg)"
-};
+  transform: "rotate(0deg)"
+} as const;

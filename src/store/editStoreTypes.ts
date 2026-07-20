@@ -1,4 +1,5 @@
 import type React from "react";
+import type { ComponentType } from "src/pages/EditPage/LeftSider/types";
 
 export type Style = React.CSSProperties;
 
@@ -9,7 +10,7 @@ export interface Canvas {
 }
 
 export interface Component {
-	type: number;
+	type: ComponentType;
 	style: Style;
 	value: string;
 	onClick?: string;

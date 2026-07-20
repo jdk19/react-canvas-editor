@@ -1,329 +1,263 @@
-import type { ComponentType, ImageSubItem, SubItemType } from "src/pages/EditPage/LeftSider/types";
-import type { IconSubItem } from "src/pages/EditPage/LeftSider/types";
-import { defaultComponentStyle as defaultStyle } from "src/utils/const";
+import {defaultComponentStyle} from "src/utils/const";
+import useEditStore from "src/store/editStore";
+import { v4 as uuidv4 } from "uuid";
+import styles from './ImagePanel.module.less'
+import useDraggedStore from "src/store/draggedStore";
 
+const defaultStyle = {
+  ...defaultComponentStyle,
+};
 
-const items: IconSubItem[] = [
-    {
-			kind: 'icon',
-      id: 3023660,
-      title: "正文模板",
-			name: "zhengwenmoban",
-    },
-    {
-			kind: 'icon',
-      id: 4890375,
-			title: "大标题",
-      name: "dabiaoti",
-    },
-]
+let {height, ...styleWithoutHeight} = defaultComponentStyle;
 
+const url = "/public/images/";
 
-const url = "";
-
-const settings: ImageSubItem[] = [
+const settings = [
   {
-		kind:'image',
     value: url + "react-head.png",
     style: defaultStyle,
   },
+
   {
-		kind:'image',
     value: url + "bg1.png",
     style: defaultStyle,
   },
   {
-		kind:'image',
     value: url + "bg2.png",
     style: defaultStyle,
   },
   {
-		kind:'image',
     value: url + "blue-star.png",
     style: defaultStyle,
   },
   {
-		kind:'image',
     value: url + "yellow-star.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "book.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "dancer.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "girl.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "red-girl.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "icon.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "lock.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "tree.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "certificate.jpg",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "chuliu.jpeg",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "tiger.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "hua.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "balance.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "balloon_ribbon.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "ball.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "bird_flower.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "board.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "bowknot.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "cloud.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "color_line.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "deer.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "figure.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "fire_bird.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "flower.jpg",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "flower.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "fu.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "gaoshaoyun.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "generate.gif",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "gold-coins2.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "gold-coins.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "go.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "heart.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "hua-bg.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "meng.webp",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "newyear.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "OMG.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "paper_plane.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "peony.jpg",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "pink_ball.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "pink_flower.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "plank.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "rainbow1.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "rainbow.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "red_flower.png",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "red-rose.jpg",
     style: defaultStyle,
   },
 
   {
-kind:'image',
     value: url + "ribbon.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "rinbbon1.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "rose.jpg",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "sale.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "star1.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "star.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "sun.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "taohuayun.png",
     style: defaultStyle,
   },
   {
-kind:'image',
     value: url + "technoiogy.png",
     style: defaultStyle,
   },
@@ -354,7 +288,6 @@ const arithmetic = [
 
 arithmetic.forEach((item) => {
   settings.push({
-		kind: 'image',
     value: `https://commom.pek3b.qingstor.com/all/arithmetic/${
       item.indexOf(".") > 0 ? item : item + ".png"
     }`,
@@ -362,12 +295,34 @@ arithmetic.forEach((item) => {
   });
 });
 
-const getSubItems = (id: ComponentType | null):  SubItemType | undefined => {
-	if(id === 'Text') {
-		return items;
-	} else {
-		return settings;
-	}
-}
+const ImagePanel = () => {
+	const addComponent = useEditStore(state => state.addComponent);
+	const setDraggedComponent = useDraggedStore(state => state.setDraggedComponent)	
+  return (
+    <div >
+      <ul className={styles.panel}>
+        {settings.map((item) => (
+          <li
+						className={styles.iconContainer}
+            draggable={true}
+            key={item.value}
+            onClick={() => addComponent({...item, type: 'Image', key: uuidv4(), style: styleWithoutHeight})}
+            onDragStart={
+								() => { 
+									setDraggedComponent({
+										type: 'Image',
+										style: styleWithoutHeight,
+										value: item.value, 
+										key: uuidv4()
+									})
+								}
+            }>
+            <img src={item.value} alt={`${item.value}`} className={styles.icon} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-export default getSubItems;
+export default ImagePanel;
