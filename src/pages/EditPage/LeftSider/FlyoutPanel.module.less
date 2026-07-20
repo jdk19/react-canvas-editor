@@ -1,0 +1,34 @@
+.panel {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+	grid-auto-rows: 100px;
+	animation: moveLeftIn 0.3s ;
+	animation-fill-mode: backwards;
+}
+
+.iconContainer {
+	width: 80px;
+	height: 80px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+}
+
+.icon {
+	font-size: 40px;
+}
+
+@keyframes moveLeftIn {
+	0% {
+		opacity: 0;
+		transform: translateX(-20px); 
+	}	
+	50% {
+		transform: translateX(-20px); 
+	}	
+	100% {
+		opacity: 1;
+		transform: translateX(0); 
+	}	
+}
