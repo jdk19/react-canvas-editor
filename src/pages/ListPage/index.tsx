@@ -2,6 +2,9 @@ import {useEffect, useState} from "react";
 import {Card, Space, Table, Button, Divider, Modal} from "antd";
 import {Link} from "react-router";
 import {deleteCanvas, getCanvasList} from "src/request/list";
+import Axios from "src/request/Axios";
+import { getCanvasListEnd } from "src/request";
+import { getHeaders } from 'src/request/index';
 
 type ListItem = {
   id: number;
@@ -15,15 +18,17 @@ const {confirm} = Modal;
 export default function List() {
   const [list, setList] = useState([]);
 
-  const fresh = () => {
-    getCanvasList("", (res: any) => {
-      let data = res.content || [];
-      // 不让用户编辑这三个模板页
-      data = data.filter(
-        (item: ListItem) => item.id !== 2 && item.id !== 30 && item.id !== 31
-      );
-      setList(data);
-    });
+  const fresh = async () => {
+    // getCanvasList("", (res: any) => {
+    //   let data = res.content || [];
+    //   // 不让用户编辑这三个模板页
+    //   data = data.filter(
+    //     (item: ListItem) => item.id !== 2 && item.id !== 30 && item.id !== 31
+    //   );
+    //   setList(data);
+    // });
+		const response = await Axios.get(getCanvasListEnd, getHeaders());
+		setList(response.data.result.content || []);
   };
 
   useEffect(() => {

@@ -1,6 +1,38 @@
 import { create } from 'zustand';
 import { immer } from 'zustand/middleware/immer';
 import type { Canvas, EditStoreState, EditStoreAction} from './editStoreTypes';
+import Axios from 'src/request/Axios';
+import { getCanvasByIdEnd, saveCanvasEnd } from 'src/request';
+
+export const saveCanvas = async (
+	id: string | null,
+	type: string,
+	successCallback: (id: string, type: string) => void
+) => {
+	const canvas = useEditStore.getState().canvas;
+	console.log('canvas', canvas, JSON.stringify(canvas));
+	const res: any = await Axios.post(saveCanvasEnd, {
+		id: id,
+		title: canvas.title,
+		content: JSON.stringify(canvas),
+		type: type,
+	})
+	console.log(res.data.result.id);
+	successCallback(res.data.result.id, res.data.result.type);
+}
+
+export const fetchCanvas = async (
+	id: string | null	
+) => {
+	if(id === null) return ;
+	const res = await Axios.get(getCanvasByIdEnd + id);
+	const canvas = JSON.parse(res.data.result.content);	
+	useEditStore.setState({ canvas });
+}
+
+export const clearCanvas = () => {
+	useEditStore.setState((draft) => { draft.canvas = getDefaultCanvas(); });
+}
 
 function getDefaultCanvas(): Canvas {
   return {
@@ -28,5 +60,15 @@ const useEditStore = create<EditStoreState & EditStoreAction>()(
 		})
 	)
 )
+
+export const updateComponentStyle = (key: string, style: React.CSSProperties) => {
+	useEditStore.setState((draft) => {
+		draft.canvas.comps.forEach((item, index, comps) => {
+			if(item.key === key) {
+				Object.assign(comps[index].style, style);
+			}	
+		})		
+	})
+}
 
 export default useEditStore;

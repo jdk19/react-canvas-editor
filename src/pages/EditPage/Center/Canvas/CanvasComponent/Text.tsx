@@ -1,8 +1,15 @@
-import { memo } from "react";
+import React, { memo } from "react";
 
-const Text = memo(({ value }: { value: string }) => {
+interface CompPropsType { 
+	value: string,
+	style: React.CSSProperties,
+};
+
+const Text = memo(({ value, style, }: CompPropsType ) => {
 	return (
-		<>{value}</>
+		<div style={style}>
+			{value}
+		</div>
 	);
 })
 

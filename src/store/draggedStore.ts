@@ -7,7 +7,6 @@ const useDraggedStore = create<DraggedStoreState & DraggedStoreAction>()(
 		draggedComponent: null,
 		setDraggedComponent: (component) => set((state) => { 
 			state.draggedComponent = component 
-			console.log(component);
 		}),
 		getDraggedComponent: () => get().draggedComponent,
 	}))

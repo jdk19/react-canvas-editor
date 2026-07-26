@@ -264,26 +264,26 @@ const settings = [
 ];
 
 // 前端算法实战
-const arithmetic = [
-  "金九银十",
-  "前端算法实战-buy.webp",
-  "前端算法实战-title",
-  "前端算法实战",
-  "balloon-1",
-  "balloon-2",
-  "balloon-green",
-  "cloud",
-  "fairytale.webp",
-  "five-balls",
-  "flower",
-  "girl-balloon",
-  "green-learning",
-  "heart-balloon",
-  "prince",
-  "red-flower",
-  "ribbons",
-  "up",
-  "wing",
+const arithmetic: string[] = [
+  // "金九银十",
+  // "前端算法实战-buy.webp",
+  // "前端算法实战-title",
+  // "前端算法实战",
+  // "balloon-1",
+  // "balloon-2",
+  // "balloon-green",
+  // "cloud",
+  // "fairytale.webp",
+  // "five-balls",
+  // "flower",
+  // "girl-balloon",
+  // "green-learning",
+  // "heart-balloon",
+  // "prince",
+  // "red-flower",
+  // "ribbons",
+  // "up",
+  // "wing",
 ];
 
 arithmetic.forEach((item) => {
@@ -316,7 +316,13 @@ const ImagePanel = () => {
 										key: uuidv4()
 									})
 								}
-            }>
+            }
+						onDragEnd={
+							() => {
+								setDraggedComponent(null)
+							}
+						}
+					>
             <img src={item.value} alt={`${item.value}`} className={styles.icon} />
           </li>
         ))}

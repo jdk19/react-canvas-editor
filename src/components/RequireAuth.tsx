@@ -1,8 +1,11 @@
 import { Outlet } from "react-router";
-import { Layout } from "antd";
+import { Layout, Spin } from "antd";
 import Login from "./Login.tsx";
+import useLoadingStore from "src/store/LodingStore.ts";
+import styles from './RequireAuth.module.less'
 
 const RequireAuth : React.FC = () => {
+	const isLoading = useLoadingStore(state => state.isLoading);
   const headerStyle: React.CSSProperties = {
     textAlign: "center",
     color: "#fff",
@@ -13,6 +16,12 @@ const RequireAuth : React.FC = () => {
   };
 	return (
 		<Layout style={{ height: "100%" }}>
+			{ isLoading &&
+				<div className={styles.loading}>
+					<Spin size="large">
+					</Spin>
+				</div>
+			}
 			<Layout.Header style={headerStyle}>
 				<Login />
 			</Layout.Header>

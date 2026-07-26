@@ -12,8 +12,8 @@ export function login(
     common(
       res,
       () => {
-        docCookies.setItem("sessionId", res.data.result.sessionId);
-        docCookies.setItem("name", res.data.result.name);
+        docCookies.setItem("sessionId", res.data.result.sessionId, undefined, '/');
+        docCookies.setItem("name", res.data.result.name, undefined, '/');
         successCallback();
       },
       failedCallback
@@ -22,7 +22,7 @@ export function login(
 }
 
 export const logout = (callback: () => void) => {
-  docCookies.removeItem("sessionId");
-  docCookies.removeItem("name");
+  docCookies.removeItem("sessionId", '/');
+  docCookies.removeItem("name", '/');
   callback();
 };

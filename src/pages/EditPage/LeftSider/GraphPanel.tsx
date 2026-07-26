@@ -54,7 +54,13 @@ const GraphPanel = () => {
               backgroundColor: item.style.backgroundColor,
               borderStyle: item.style.borderStyle,
               borderColor: item.style.borderColor,
-            }}></li>
+            }}
+						onDragEnd={
+							() => {
+								setDraggedComponent(null)
+							}
+						}
+					></li>
         ))}
       </ul>
     </div>

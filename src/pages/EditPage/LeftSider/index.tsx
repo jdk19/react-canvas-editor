@@ -46,7 +46,7 @@ const LeftSider = () => {
 				<Sider width={80} style={{backgroundColor: "#FFFFFF"}}>
 					<IconArea items={items} onClick={handleClick} selectedId={selectedId}/>
 				</Sider>
-				<Content>
+				<Content className={styles.flyoutContent}>
 					<FlyoutPanel items={getSubItems(selectedId)} id={selectedId}/>
 				</Content>
 			</Layout>

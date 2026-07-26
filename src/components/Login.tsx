@@ -9,8 +9,6 @@ const Login : React.FC = () => {
 	const auth = docCookies.getItem('sessionId');
 	const name = docCookies.getItem('name');
 	
-	console.log(auth, name);	
-
 	const handleOk = () => {
 		window.location.reload();	
 	}
