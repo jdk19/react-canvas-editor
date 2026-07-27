@@ -1,0 +1,68 @@
+.handle {
+	width: 1rem;
+	height: 1rem;
+	border-radius: 50%;
+	position: absolute;	
+	background-color: #29B6F2;
+	will-change: transform;
+	display: flex;	
+	justify-content: center;
+	align-items: center;
+}
+
+
+.top-left {
+	top: 0;
+	left: 0;
+	transform: translate(-50%, -50%);
+	cursor: nw-resize;
+}
+
+.top {
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	cursor: n-resize;
+}
+
+.top-right {
+	top: 0;
+	right: 0;
+	transform: translate(50%, -50%);
+	cursor: ne-resize;
+}
+
+.left {
+	top: 50%;
+	left: 0;
+	transform: translate(-50%, -50%);
+	cursor: w-resize;
+}
+
+.right {
+	top: 50%;
+	right: 0;
+	transform: translate(50%, -50%);
+	cursor: e-resize;
+}
+
+.bottom-left {
+	bottom: 0;
+	left: 0;
+	transform: translate(-50%, 50%);
+	cursor: sw-resize;
+}
+
+.bottom {
+	bottom: 0;
+	left: 50%;
+	transform: translate(-50%, 50%);
+	cursor: s-resize;
+}
+
+.bottom-right {
+	bottom: 0;
+	right: 0;
+	transform: translate(50%, 50%);
+	cursor: se-resize;
+}

@@ -15,7 +15,7 @@ const TextPanel = ({ items }: any) => {
 							key={item.id} className={classNames(styles.iconContainer)}
 							style={{cursor: 'default'}}
 							onClick={
-								() => addComponent({type: 'Text', style: {}, value: item.title, key: uuidv4()})
+								() => addComponent({type: 'Text', style: {position: 'absolute', top: 0, left: 0}, value: item.title, key: uuidv4()})
 							}
 							draggable={true}
 							onDragStart={
