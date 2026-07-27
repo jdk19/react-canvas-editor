@@ -4,10 +4,11 @@ import styles from './index.module.less'
 import type React from "react";
 import useDraggedStore from "src/store/draggedStore";
 import useCanvasId from "src/hooks/useCanvasId";
-import { memo, useCallback, useEffect } from "react";
+import { memo, useCallback, useEffect, useRef } from "react";
 import { fetchCanvas } from "src/store/editStore";
 import useSelectedCompsStore, { addSelectedComp, clearSelectedComps, removeSelectedComp } from "src/store/selectedCompStore";
 import Comp from './CanvasComponent/Comp'
+import useMouse from "src/hooks/useMouse";
 
 
 const Canvas = memo(() => {
@@ -16,6 +17,11 @@ const Canvas = memo(() => {
 	const getDraggedComponent = useDraggedStore(state => state.getDraggedComponent);
 	const { comps } = canvasStore;
 	const selectedKeys = useSelectedCompsStore(state => state.selectedKeys);
+	const [mousePosition, canvasRef] = useMouse();
+	const mousePositionRef = useRef(mousePosition);
+	useEffect(() => {
+      mousePositionRef.current = mousePosition;
+	}, [mousePosition]);
 	
 	const [canvasId] = useCanvasId();
 	useEffect(() => {
@@ -65,21 +71,37 @@ const Canvas = memo(() => {
 
 	const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
 		e.stopPropagation();
+		e.preventDefault();
+		e.currentTarget.setPointerCapture(e.pointerId);
+		const comps = useEditStore.getState().canvas.comps;
+		const draggedComp = comps.find((comp) => comp.key === e.currentTarget.dataset.key);
+		if(draggedComp !== (void 0)) {
+			useDraggedStore.setState((draft) => { draft.draggedComponent = draggedComp; });
+		}
 	}, [])
 
 	const handleSelectPointerUp = useCallback(
 		(e: React.PointerEvent<HTMLDivElement>) => {
 			e.stopPropagation();
+			e.currentTarget.releasePointerCapture(e.pointerId);
 			const key = e.currentTarget.dataset.key;
 			if(!key) return;
 			const selectedKeys = useSelectedCompsStore.getState().selectedKeys;
 			if(!e.shiftKey) {
 				clearSelectedComps();
 			}
-			if(selectedKeys.has(key)) {
+			if(selectedKeys.has(key) && e.shiftKey) {
 				removeSelectedComp(key);
 			} else {
 				addSelectedComp(key);	
+			}
+			
+			const { top, left, height, width } = mousePositionRef.current;
+			if(top > 0 && left > 0 && top < height && left < width) {
+				updateComponentStyle(key, {
+					left: left + 'px',
+					top: top + 'px',
+				})
 			}
 		}, []);
 
@@ -87,6 +109,7 @@ const Canvas = memo(() => {
 		<div 
 			className={classNames(styles.canvasContainer)} 
 			style={canvasStore.style}	
+			ref={canvasRef}
 			onDragOver={(event) => { event.preventDefault() }}
 			onDrop={
 				handleDrop

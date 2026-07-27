@@ -38,12 +38,7 @@ const Comp = memo((props: CompPropsType) => {
 	
 	outerStyle.width = `calc(${outerStyle.width} + 0.1rem)`;	
 	outerStyle.height = `calc(${outerStyle.height} + 0.1rem)`;	
-	const setDraggedComponent = useDraggedStore(state => state.setDraggedComponent);
 	rest.style = omit(rest.style, ['top', 'left', 'position', ]);
-	
-	const handleDragStart = () => {
-		setDraggedComponent(comp);	
-	}
 
 	const handleResize = (e: React.PointerEvent<HTMLDivElement>) => {
 		e.stopPropagation();
@@ -54,7 +49,7 @@ const Comp = memo((props: CompPropsType) => {
 			style={outerStyle}
 			className={classNames({[styles.selected]: isSelected}, styles.componentContainer)}
 			data-key={compKey} draggable={true}
-			onPointerUp={onPointerUp} onPointerDown={onPointerDown} onDragStart={handleDragStart}
+			onPointerUp={onPointerUp} onPointerDown={onPointerDown}
 		>
 			<Comp { ...rest } />
 			{isSelected && <Handles onPointerDown={handleResize}/>}
