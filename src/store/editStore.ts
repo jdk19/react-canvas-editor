@@ -66,7 +66,7 @@ export const updateComponentStyle = (key: string, style: React.CSSProperties) =>
 		draft.canvas.comps.forEach((item, index, comps) => {
 			if(item.key === key) {
 				Object.assign(comps[index].style, style);
-			}	
+			}
 		})		
 	})
 }
