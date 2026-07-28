@@ -34,10 +34,20 @@ export function getRect(comp: ComponentWithKey): RectType {
 }
 
 export function isCataining(r1: RectType, r2: RectType) {
-	return r1.top <= r2.top &&
-		r1.left <= r2.left &&
-		r1.top + r1.height >= r2.top + r2.height &&
-		r1.left + r1.width >= r2.left + r2.width;
+	function calc(r1: RectType, r2: RectType) { 
+		return r1.top <= r2.top &&
+						r1.left <= r2.left &&
+						r1.top + r1.height >= r2.top + r2.height &&
+						r1.left + r1.width >= r2.left + r2.width;
+	}
+	return calc(r1, r2) || calc(r2, r1);
+}
+
+export function isPointInBox(point: PositionType, box: RectType): boolean {
+      return point.x >= box.left &&
+              point.x <= box.left + box.width &&
+              point.y >= box.top &&
+              point.y <= box.top + box.height;
 }
 
 export function getSelectedKeys(box: RectType, origin: PositionType, comps: ComponentWithKey[]): string[] {

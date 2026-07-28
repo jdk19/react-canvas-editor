@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import styles from './Handles.module.less'
 import classNames from 'classnames';
 
@@ -10,7 +11,8 @@ const HANDLE_POSITION = [
 interface PropsType {
 	onPointerDown: React.PointerEventHandler; 
 }
-const Handles = (props: PropsType) => {
+
+const Handles = memo((props: PropsType) => {
 	const {
 		onPointerDown,
 	} = props;
@@ -23,9 +25,7 @@ const Handles = (props: PropsType) => {
 						<div 
 							className={classNames(styles[pos], styles.handle)}
 							onPointerDown={onPointerDown}
-							draggable={false}
 							key={pos}
-							onDragStart={(e) => { e.stopPropagation(); e.preventDefault(); } }
 						>
 						</div>
 					);
@@ -33,6 +33,6 @@ const Handles = (props: PropsType) => {
 			}
 		</>
 	);
-}
+})
 
 export default Handles;

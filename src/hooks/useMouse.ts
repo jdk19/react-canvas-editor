@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useRef, useCallback, useState } from "react"
 
 const initialValue = {
 	x: 0,
@@ -10,7 +10,7 @@ const initialValue = {
 };
 
 const useMouse = () => {
-	const [position, setPosition] = useState(initialValue);
+	const positionRef = useRef(initialValue);
 	const [element, setElement] = useState<null | HTMLDivElement>(null);
 
 	const callbackRef = useCallback((node: HTMLDivElement | null) => {
@@ -21,7 +21,7 @@ const useMouse = () => {
 		function updatePosition(e: PointerEvent) {
 			if(!element) return;
 			const rect = element.getBoundingClientRect();
-			const newPosition = {
+			positionRef.current = {
 				x: e.pageX,
 				y: e.pageY,
 				top: e.clientY - rect.top,
@@ -29,7 +29,6 @@ const useMouse = () => {
 				width: rect.width,
 				height: rect.height,
 			};
-			setPosition(newPosition);
 		}
 
 		if(element) {
@@ -38,7 +37,7 @@ const useMouse = () => {
 		}
 	}, [element])
 	
-	return [position, callbackRef] as const;
+	return [positionRef, callbackRef] as const;
 }
 
 export default useMouse;
