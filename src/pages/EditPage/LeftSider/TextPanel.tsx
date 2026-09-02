@@ -3,6 +3,8 @@ import useDraggedStore from "src/store/draggedStore";
 import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
 import styles from './TextPanel.module.less'
+import { defaultComponentStyle } from "src/utils/const";
+import { recordSnapphoto } from "src/store/historyStore";
 
 const TextPanel = ({ items }: any) => {
 		const addComponent = useEditStore(state => state.addComponent);
@@ -15,14 +17,22 @@ const TextPanel = ({ items }: any) => {
 							key={item.id} className={classNames(styles.iconContainer)}
 							style={{cursor: 'default'}}
 							onClick={
-								() => addComponent({type: 'Text', style: {position: 'absolute', top: 0, left: 0}, value: item.title, key: uuidv4()})
+								() => {
+									recordSnapphoto();
+									addComponent({
+										type: 'Text',
+										style: {...defaultComponentStyle,
+										position: 'absolute', top: 0, left: 0},
+										value: item.title, key: uuidv4()
+									})
+								}
 							}
 							draggable={true}
 							onDragStart={
 								() => {
 									setDraggedComponent({
 										type: 'Text', 
-										style: {}, 
+										style: {...defaultComponentStyle}, 
 										value: item.title, 
 										key: uuidv4()
 									})

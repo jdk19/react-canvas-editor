@@ -8,7 +8,6 @@ import styles from './Comp.module.less'
 import { memo } from "react";
 import type { ComponentWithKey } from "src/store/editStoreTypes";
 import Handles from "./Handles";
-import { useCallback } from "react";
 
 const COMPONENT_REGISTRY = {
 	Text: Text,
@@ -26,34 +25,34 @@ interface CompPropsType {
 	onPointerMove: React.PointerEventHandler;
 	onPointerUp: (event: React.PointerEvent<HTMLDivElement>) => void;
 	comp: ComponentWithKey;
+	canvasElement: null | HTMLDivElement; 
 };
 
 const Comp = memo((props: CompPropsType) => {
 	let { type, isSelected, onPointerUp, onPointerDown, compKey, comp, onPointerMove,
+				canvasElement,
 				...rest } = props;
   const Comp = COMPONENT_REGISTRY[type];
+
 	let outerStyle = {
 		...pick(rest.style, ['top', 'left', 'position', 'width', 'height']),
-		transform: 'translate(-50%, -50%)',
+		// transform: 'translate(-50%, -50%)',
 	}
 	
 	outerStyle.width = `calc(${outerStyle.width} + 0.1rem)`;	
 	outerStyle.height = `calc(${outerStyle.height} + 0.1rem)`;	
 	rest.style = omit(rest.style, ['top', 'left', 'position', ]);
 
-	const handleResize = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-		e.stopPropagation();
-	}, []);
 
 	return (
 		<div
 			style={outerStyle}
 			className={classNames({[styles.selected]: isSelected}, styles.componentContainer)}
-			data-key={compKey} draggable={true}
+			data-key={compKey}
 			onPointerUp={onPointerUp} onPointerDown={onPointerDown} onPointerMove={onPointerMove}
 		>
-			<Comp { ...rest } />
-			{isSelected && <Handles onPointerDown={handleResize}/>}
+			<Comp { ...rest } compKey={compKey} />
+			{isSelected && <Handles compKey={compKey} canvasElement={canvasElement}/>}
 		</div>
 	)
 })

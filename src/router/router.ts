@@ -1,7 +1,5 @@
 import { createBrowserRouter } from "react-router";
 import RequireAuth from "src/components/RequireAuth";
-import EditPage from "src/pages/EditPage";
-import ListPage from "src/pages/ListPage";
 
 const router = createBrowserRouter([
 	{
@@ -10,11 +8,11 @@ const router = createBrowserRouter([
 		children: [
 			{
 				index: true,
-				Component: EditPage,
+				lazy: () => import("src/pages/EditPage").then((m) => ({ Component: m.default })),
 			},
 			{
 				path: '/list',
-				Component: ListPage,
+				lazy: () => import("src/pages/ListPage").then((m) => ({ Component: m.default })),
 			}
 		]
 	}

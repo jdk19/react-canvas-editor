@@ -5,6 +5,7 @@ import SelectBox from './SelectBox';
 import useEditStore from 'src/store/editStore';
 import { addSelectedComp } from 'src/store/selectedCompStore';
 import { calcSelectBoxShape, getSelectedKeys } from 'src/utils/selectBox';
+import { recordSnapphoto } from 'src/store/historyStore';
 
 const { Content } = Layout;
 

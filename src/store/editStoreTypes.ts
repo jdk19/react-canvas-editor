@@ -17,7 +17,7 @@ export interface Component {
 }
 
 export interface ComponentWithKey extends Component{
-	key: string;	
+	key: string;
 }
 
 export interface EditStoreState {

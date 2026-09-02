@@ -3,6 +3,7 @@ import useEditStore from "src/store/editStore";
 import { v4 as uuidv4 } from "uuid";
 import styles from './ImagePanel.module.less'
 import useDraggedStore from "src/store/draggedStore";
+import { recordSnapphoto } from "src/store/historyStore";
 
 const defaultStyle = {
   ...defaultComponentStyle,
@@ -10,7 +11,7 @@ const defaultStyle = {
 
 let {height, ...styleWithoutHeight} = defaultComponentStyle;
 
-const url = "/public/images/";
+const url = "/images/";
 
 const settings = [
   {
@@ -306,7 +307,10 @@ const ImagePanel = () => {
 						className={styles.iconContainer}
             draggable={true}
             key={item.value}
-            onClick={() => addComponent({...item, type: 'Image', key: uuidv4(), style: styleWithoutHeight})}
+            onClick={() => {
+							recordSnapphoto();
+							addComponent({...item, type: 'Image', key: uuidv4(), style: styleWithoutHeight})
+						}}
             onDragStart={
 								() => { 
 									setDraggedComponent({
@@ -323,7 +327,7 @@ const ImagePanel = () => {
 							}
 						}
 					>
-            <img src={item.value} alt={`${item.value}`} className={styles.icon} />
+            <img src={item.value} alt={`${item.value}`} className={styles.icon} loading="lazy" />
           </li>
         ))}
       </ul>

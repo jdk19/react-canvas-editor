@@ -3,6 +3,7 @@ import useEditStore from "src/store/editStore";
 import {defaultComponentStyle} from "src/utils/const";
 import { v4 as uuidv4 } from 'uuid'
 import styles from './GraphPanel.module.less'
+import { recordSnapphoto } from "src/store/historyStore";
 
 const defaultStyle = {
   ...defaultComponentStyle,
@@ -40,7 +41,7 @@ const GraphPanel = () => {
           <li
             draggable={true}
             key={item.key}
-            onClick={() => addComponent({...item, type: "Graph", key: uuidv4()})}
+            onClick={() => { recordSnapphoto(); addComponent({...item, type: "Graph", key: uuidv4()}) }}
             onDragStart={() => {
 									setDraggedComponent({
 										...item,

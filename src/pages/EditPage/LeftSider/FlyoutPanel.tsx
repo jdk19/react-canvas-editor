@@ -1,9 +1,5 @@
-import classNames from "classnames";
 import type { ComponentType, SubItemType } from "./types";
-import styles from './FlyoutPanel.module.less';
-import useEditStore from "src/store/editStore";
 import type { Style } from "src/store/editStoreTypes";
-import useDraggedStore from "src/store/draggedStore";
 import ImagePanel from "./ImagePanel";
 import TextPanel from "./TextPanel";
 import GraphPanel from "./GraphPanel";
@@ -24,7 +20,7 @@ const FlyoutPanel = ({ items, id } : { items: SubItemType | undefined, id: Compo
 			<>
 				{id === 'Image' && <ImagePanel />}
 				{id === 'Text' && <TextPanel items={items} />}
-				{id === 'Graph' && <GraphPanel items={items} />}
+				{id === 'Graph' && <GraphPanel />}
 			</>
 		)
 		// return (

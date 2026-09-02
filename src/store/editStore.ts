@@ -3,6 +3,7 @@ import { immer } from 'zustand/middleware/immer';
 import type { Canvas, EditStoreState, EditStoreAction} from './editStoreTypes';
 import Axios from 'src/request/Axios';
 import { getCanvasByIdEnd, saveCanvasEnd } from 'src/request';
+import { devtools } from 'zustand/middleware';
 
 export const saveCanvas = async (
 	id: string | null,
@@ -53,11 +54,16 @@ function getDefaultCanvas(): Canvas {
 }
 
 const useEditStore = create<EditStoreState & EditStoreAction>()(
-	immer(
-		(set) => ({
-			canvas: getDefaultCanvas(),
-			addComponent: (comp) => { set(draft => {draft.canvas.comps.push(comp)}) }
-		})
+	devtools(
+		immer(
+			(set) => ({
+				canvas: getDefaultCanvas(),
+				addComponent: (comp) => { set(draft => {draft.canvas.comps.push(comp)}) }
+			})
+		),
+		{
+			name: 'edtiStore',
+		}
 	)
 )
 
@@ -67,7 +73,16 @@ export const updateComponentStyle = (key: string, style: React.CSSProperties) =>
 			if(item.key === key) {
 				Object.assign(comps[index].style, style);
 			}
-		})		
+		})
+	})
+}
+
+export const removeComponentsByKey = (...key: string[]) => {
+	const keySet = new Set<string>(key);
+	useEditStore.setState((draft) => {
+		draft.canvas.comps = draft.canvas.comps.filter((comp) => {
+			return !keySet.has(comp.key);	
+		})
 	})
 }
 

@@ -37,7 +37,7 @@ const useMouse = () => {
 		}
 	}, [element])
 	
-	return [positionRef, callbackRef] as const;
+	return [positionRef, callbackRef, element] as const;
 }
 
 export default useMouse;

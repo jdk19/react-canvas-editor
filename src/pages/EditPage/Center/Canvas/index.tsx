@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import useEditStore, { clearCanvas, updateComponentStyle } from "src/store/editStore";
+import useEditStore, { clearCanvas, removeComponentsByKey, updateComponentStyle } from "src/store/editStore";
 import styles from './index.module.less'
 import type React from "react";
 import useDraggedStore from "src/store/draggedStore";
@@ -9,37 +9,92 @@ import { fetchCanvas } from "src/store/editStore";
 import useSelectedCompsStore, { addSelectedComp, clearSelectedComps, removeSelectedComp } from "src/store/selectedCompStore";
 import Comp from './CanvasComponent/Comp'
 import useMouse from "src/hooks/useMouse";
-import { isPointInBox } from "src/utils/selectBox";
+import { copySelectedComps, pasteComps } from "src/store/clipboardStore";
+import { recordSnapphoto, redo, resetHistory, undo } from "src/store/historyStore";
 
 interface Position {
 	x: number;
 	y: number;
 }
+
 const Canvas = memo(() => {
 	const canvasStore = useEditStore(state => state.canvas);
 	const addComponent = useEditStore(state => state.addComponent);
 	const getDraggedComponent = useDraggedStore(state => state.getDraggedComponent);
 	const { comps } = canvasStore;
 	const selectedKeys = useSelectedCompsStore(state => state.selectedKeys);
-	const [mousePositionRef, canvasRef] = useMouse();
+	const [mousePositionRef, canvasRef, canvasElement] = useMouse();
 	const isDraggingRef = useRef(false);
 	const dragStartPositionRef = useRef<Position>(mousePositionRef.current);
 	const dragStartCompStyleRef = useRef({top: 0, left: 0});
 	const rafIdRef = useRef<number | null>(null);
-
+	
 	const [canvasId] = useCanvasId();
 	useEffect(() => {
 		fetchCanvas(canvasId);
 		if(!canvasId) clearCanvas();
+		resetHistory();
 	}, [canvasId])
 	
 	useEffect(() => {
-		const cancleSelect = () => {
-			clearSelectedComps();
+		const cancleSelect = (e: PointerEvent) => {
+			if (e.target === canvasElement) {  // 只有点在画布空白处才取消选中
+				clearSelectedComps();
+			}
 		}
 		document.addEventListener('pointerup', cancleSelect);
 		return () => document.removeEventListener('pointerup', cancleSelect);
+	}, [canvasElement])
+
+	useEffect(() => {
+		const handleClip = (e: KeyboardEvent) => {
+			if(e.key === 'c' && (e.ctrlKey || e.metaKey)) {
+				copySelectedComps();
+			}
+		}
+		const handlePaste = (e: KeyboardEvent) => {
+			if(e.key === 'v' && (e.ctrlKey || e.metaKey)) {
+				pasteComps();
+			}
+		}
+		document.addEventListener('keydown', handleClip);
+		document.addEventListener('keydown', handlePaste);
+		return () => {
+			document.removeEventListener('keydown', handleClip);
+			document.removeEventListener('keydown', handlePaste);
+		}
 	}, [])
+
+	
+	useEffect(() => {
+		const handleDelete = (e: KeyboardEvent) => {
+			if(e.key === 'Delete' || e.key === 'Backspace') {
+				recordSnapphoto();
+				removeComponentsByKey(...Array.from(useSelectedCompsStore.getState().selectedKeys));
+			}
+		}
+
+		document.addEventListener('keydown', handleDelete);
+		return () => {
+			document.removeEventListener('keydown', handleDelete);
+		}
+	}, [])
+
+	useEffect(() => {
+		const handleUndoRedo = (e: KeyboardEvent) => {
+			if(e.key.toLowerCase() !== 'z' || !(e.ctrlKey || e.metaKey)) return;
+			e.preventDefault();
+			if(e.shiftKey) {
+				redo();
+			} else {
+				undo();
+			}
+		}
+		document.addEventListener('keydown', handleUndoRedo);
+		return () => {
+			document.removeEventListener('keydown', handleUndoRedo);
+		}
+	}, []);
 
 	const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
 		event.preventDefault();
@@ -50,6 +105,7 @@ const Canvas = memo(() => {
 		const	top = event.clientY - canvasRect.top;
 		
 		const exsited = canvasStore.comps.some(comp => comp.key === draggedComponent.key);
+		recordSnapphoto();
 		if(exsited) {
 			updateComponentStyle(
 				draggedComponent.key,
@@ -77,6 +133,7 @@ const Canvas = memo(() => {
 		e.stopPropagation();
 		e.preventDefault();
 		isDraggingRef.current = true;
+		recordSnapphoto();
 		e.currentTarget.setPointerCapture(e.pointerId);
 		const key = e.currentTarget.dataset.key;
 		const comp = useEditStore.getState().canvas.comps.find((c) => c.key === key);
@@ -91,11 +148,11 @@ const Canvas = memo(() => {
 	}, [])
 
 	const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+		if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
 		if(!isDraggingRef.current) return ;
 		e.stopPropagation();
 		e.preventDefault();
 		const key = e.currentTarget.dataset.key!;
-		console.log('pointer is moving');
 		function changePosition() {
 			const currentPosition: Position = mousePositionRef.current;
 			const offsetX = currentPosition.x - dragStartPositionRef.current.x;
@@ -118,6 +175,7 @@ const Canvas = memo(() => {
 
 	const handleSelectPointerUp = useCallback(
 		(e: React.PointerEvent<HTMLDivElement>) => {
+			if (!e.currentTarget.hasPointerCapture(e.pointerId)) return;
 			e.stopPropagation();
 			e.currentTarget.releasePointerCapture(e.pointerId);
 			const key = e.currentTarget.dataset.key!;
@@ -135,15 +193,15 @@ const Canvas = memo(() => {
 				addSelectedComp(key);	
 			}
 			
-			const { x, y, top, left, height, width } = mousePositionRef.current;
-			const box = e.currentTarget.getBoundingClientRect();
-			if(isPointInBox({x, y}, box)) return ;
-			if(isPointInBox({x: left, y: top}, {top: 0, left: 0, height, width})) {
-				updateComponentStyle(key, {
-					left: left + 'px',
-					top: top + 'px',
-				})
+			const currentPosition: Position = mousePositionRef.current;
+			const offsetX = currentPosition.x - dragStartPositionRef.current.x;
+			const offsetY = currentPosition.y - dragStartPositionRef.current.y;
+			if (offsetX === 0 && offsetY === 0) return;
+			const newStyle = {
+				top: dragStartCompStyleRef.current.top + offsetY + 'px',
+				left: dragStartCompStyleRef.current.left + offsetX + 'px'
 			}
+			updateComponentStyle(key, newStyle);
 		}, []);
 
 	return (
@@ -167,6 +225,7 @@ const Canvas = memo(() => {
 								isSelected={selectedKeys.has(key)}
 								compKey={key}
 								comp={comp}
+								canvasElement={canvasElement}
 							/>
 					)
 				})

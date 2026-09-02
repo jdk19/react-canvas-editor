@@ -5,6 +5,7 @@ import { saveCanvas } from 'src/store/editStore';
 import useCanvasId from 'src/hooks/useCanvasId';
 import useCanvasType from 'src/hooks/useCanvasType';
 import { clearCanvas } from 'src/store/editStore';
+import { undo, redo, recordSnapphoto } from 'src/store/historyStore';
 
 const Header = (props : any) => {
 	const [canvasId] = useCanvasId();
@@ -25,6 +26,7 @@ const Header = (props : any) => {
 	}
 
   const emptyCanvas = () => {
+		recordSnapphoto();
 		clearCanvas();
 	}
 
@@ -48,7 +50,7 @@ const Header = (props : any) => {
         <span className={styles.txt}>保存并预览</span>
       </div>
 
-      <div className={classNames(styles.item)}>
+      <div className={classNames(styles.item)} onClick={() => { undo() }}>
         <span
           className={classNames(
             "iconfont icon-chexiaofanhuichehuishangyibu",
@@ -58,7 +60,7 @@ const Header = (props : any) => {
         <span className={styles.shortKey}>CMD+Z</span>
       </div>
 
-      <div className={classNames(styles.item)}>
+      <div className={classNames(styles.item)} onClick={() => { redo() }}>
         <span
           className={classNames(
             "iconfont icon-chexiaofanhuichehuishangyibu",
